@@ -1,0 +1,122 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class ATM {
+private:
+    vector<int> denominations;
+public:
+    ATM() {
+        denominations = {0, 0, 0, 0, 0, 0}; // Initializing with zero notes for each denomination
+    }
+
+    void deposit(int notes[]) {
+        for (int i = 0; i < 6; i++) {
+            denominations[i] += notes[i];
+        }
+    }
+
+    vector<int> withdraw(int amount) {
+        int depositNotes[] = {10, 20, 50, 100, 200, 500};
+        vector<int> result(6, 0); // Initializing result vector with zeros for each denomination
+        int remainingAmount = amount;
+        
+        for (int i = 5; i >= 0; i--) {
+            int notesToWithdraw = remainingAmount /(depositNotes[i]);           
+            if (notesToWithdraw > result[i ]) {
+                result[i ] = notesToWithdraw;
+            }
+            remainingAmount -= notesToWithdraw*(depositNotes[i]) ;
+        }
+
+        if (remainingAmount == 0) {
+            // Update the number of banknotes
+            for (int i = 0; i <= 5; i++) {
+                denominations[i] -= result[i];
+            }   
+            return result;
+        }
+        else {
+            // If it is not possible to withdraw the requested amount
+            return{-1};
+        }
+    }
+};
+class ATM_DEPOSIT {
+private:
+    int notes[6];  // Array to store notes of denominations: 10, 20, 50, 100, 200, 500
+
+public:
+    // Constructor to initialize the ATM with zero notes
+    ATM_DEPOSIT() {
+        for (int i = 0; i < 6; ++i) {
+            notes[i] = 0;
+        }
+    }
+
+    // Function to deposit notes in the order 10, 20, 50, 100, 200, and 500 rupees respectively
+    void deposit(int denomination[6]) {
+        for (int i = 0; i < 6; ++i) {
+            notes[i] += denomination[i];
+        }
+        cout << "Deposit successful!\n";
+    }
+
+    // Function to display the current balance of each denomination
+    void displayBalance() {
+        cout << "Current ATM Balance:\n";
+        int depositNotes[] = {10, 20, 50, 100, 200, 500};
+        int totalAmount=0;
+        for (int i = 0; i < 6; ++i) {
+            totalAmount+=(depositNotes[i]*notes[i]);
+            cout << "Rs " <<depositNotes[i] << " notes: " << notes[i] << "\n";
+        }
+        cout<<"Total Amount = "<<totalAmount<<endl;
+    }
+};
+int main() {
+    ATM atm;
+    ATM_DEPOSIT atmMachine;
+    int choice;
+    cout<<"Enter 1 for depositing and 2 for withdrawing amount : ";
+    cin>>choice;
+    int depositAmount[6];
+    // Example usage
+    if(choice==1){
+        cout<<"enter number of notes to deposit in order of 10,20,50,100,200,500 : "<<endl;
+        for(int i=0;i<6;i++){
+            cin>>depositAmount[i];
+        }
+
+    // Depositing notes
+    atmMachine.deposit(depositAmount);
+    atmMachine.displayBalance();
+    }
+    int depositNotes[] = {10, 20, 50, 100, 200, 500};
+    int withdrawAmount;
+    if(choice==2){
+        cout<<"Enter amount to withdraw : ";
+        cin>>withdrawAmount;
+    vector<int>withdrawnNotes=atm.withdraw(withdrawAmount);
+    int flag=0;
+    for(int i=0;i<5;i++){
+        if(withdrawnNotes[i]==-1){
+            break;
+        }
+        if(withdrawnNotes[i]!=0){
+            flag=1;
+        }
+    }
+    if (flag == 0) {
+        cout << "Withdrawal not possible." << endl;
+    } else {
+        cout << "Notes withdrawn: "<<endl;
+        int depositNotes[] = {10,20, 50, 100, 200, 500};
+        for (int i = 0; i <= 5; i++) {
+            cout <<  "Rs " <<depositNotes[i] << " notes: " <<withdrawnNotes[i] << endl;
+        }
+       
+    }
+    }
+    return 0;
+}
